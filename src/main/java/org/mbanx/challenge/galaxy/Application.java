@@ -34,9 +34,6 @@ public class Application extends SpringBootServletInitializer implements Command
 		SpringApplication.run(Application.class, args);
 	}
 
-//	@Autowired(required = false)
-//	private ServiceProperties serviceProps;
-
 	@RequestMapping
 	@ResponseBody
 	public String welcome() {
@@ -46,7 +43,7 @@ public class Application extends SpringBootServletInitializer implements Command
 	@Bean
 	public Docket api() {
 		Contact contact = new Contact("name", "", "adi.lambang@yahoo.co.id");
-		ApiInfo apiInfo = new ApiInfo("Galaxt Merchant Tradaing Service", "", "1.0", "", contact, "", "",
+		ApiInfo apiInfo = new ApiInfo("Galaxy Merchant Tradaing Service", "", "1.0", "", contact, "", "",
 				new ArrayList<>());
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo);
 	}
