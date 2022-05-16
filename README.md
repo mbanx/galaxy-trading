@@ -20,6 +20,7 @@ Unit testing also provided to ensure application can handle some scenarios.
 
 #Flow Chart
 Diagram below describes main processing sequences of the application from receiving input until generate output.
+![alt text](https://github.com/mbanx/galaxy-trading/blob/master/img/flowchart.png?raw=true)
 
 # Run The Application
 Below are the steps to running the application. We provide two approaches to running the application
@@ -39,4 +40,6 @@ Below are the steps to running the application. We provide two approaches to run
 Once the application started you can access the swagger-ui using browser **http://localhost:8080/swagger-ui.html** and access endpoint **POST:/trading/queries** and write query on body textbox.
 
 ### Swagger input example
+![alt text](https://github.com/mbanx/galaxy-trading/blob/master/img/input.png?raw=true)
 
+![alt text](https://github.com/mbanx/galaxy-trading/blob/master/img/output.png?raw=true)
