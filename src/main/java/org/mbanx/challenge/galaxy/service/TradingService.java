@@ -29,16 +29,18 @@ public class TradingService {
 		galaxyToNumberMap = new HashMap<>();
 		unitToValueMap = new HashMap<>();
 
-		//init value
+		this.initRomanToNumber();
+	}
+
+	public void initRomanToNumber() {
+		//initial value
 		romanToNumbeMap.put('I',1);
 		romanToNumbeMap.put('V',5);
 		romanToNumbeMap.put('X',10);
 		romanToNumbeMap.put('L',50);
 		romanToNumbeMap.put('C',100);   
 		romanToNumbeMap.put('D',500);   
-		romanToNumbeMap.put('M',1000);    
-
-
+		romanToNumbeMap.put('M',1000); 
 	}
 
 	public boolean isRomanValid(String roman) throws Exception {
@@ -52,25 +54,6 @@ public class TradingService {
 		return valid;
 	}
 
-	public int romanToNumberOld(String roman) {
-		int result = 0;
-		if(StringUtils.isNotBlank(roman)) {
-			for (int i = 0; i < roman.length(); i++) {
-				char ch = roman.charAt(i); // Current Roman Character
-				// Case 1
-				if (i > 0 && romanToNumbeMap.get(ch) > romanToNumbeMap.get(roman.charAt(i - 1))) {
-					result += romanToNumbeMap.get(ch) - 2 * romanToNumbeMap.get(roman.charAt(i - 1));
-				}
-				// Case 2: just add the corresponding number to result.
-				else {
-					result += romanToNumbeMap.get(ch);
-				}
-			}
-		}
-		return result;
-	}
-	
-	
 	public int romanToNumber(String roman) {
 		int number = 0;
 		for (int i = 0; i < roman.length(); i++) {
@@ -92,6 +75,9 @@ public class TradingService {
 
 				if(galaxyToRomanMap.containsKey(galaxyNumber)) {
 					roman += galaxyToRomanMap.get(galaxyNumber);
+				}
+				else {
+					throw new Exception("galaxyNumber '"+galaxyNumber+"' unrecognize");
 				}
 			}
 		}
@@ -115,7 +101,7 @@ public class TradingService {
 
 		String galaxyUnit = splits[splitsLength - 1];
 		String galaxyNumber = StringUtils.replace(text, " "+galaxyUnit, "");
-		String romanNumber = this.galaxyToRoman(text);
+		String romanNumber = this.galaxyToRoman(galaxyNumber);
 		int number = this.romanToNumber(romanNumber);
 
 		GalaxyNumberUnit gnu = new GalaxyNumberUnit();
@@ -143,7 +129,7 @@ public class TradingService {
 		return total;
 	}
 
-	public QueryOutput firstTypeProcessor(String text) {
+	public QueryOutput galaxyToRomanProcessor(String text) {
 		QueryOutput qo = new QueryOutput();
 
 		boolean valid = false;
@@ -155,13 +141,13 @@ public class TradingService {
 				String group1 = m.group(1);
 				String group2 = m.group(2);
 				String group3 = m.group(3);
-//				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
+				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
 
 				String galaxy = group1;
 				String roman = group3;
 
 				try {
-					isRomanValid(roman);
+					this.isRomanValid(roman);
 					int number = this.romanToNumber(roman);
 
 					galaxyToRomanMap.put(galaxy, roman);
@@ -179,7 +165,7 @@ public class TradingService {
 		return qo;
 	}
 
-	public QueryOutput secondTypeProcessor(String text) {
+	public QueryOutput galaxyUnitToNumberProcessor(String text) {
 		QueryOutput qo = new QueryOutput();
 
 		boolean valid = false;
@@ -192,8 +178,8 @@ public class TradingService {
 				String group2 = m.group(2);
 				String group3 = m.group(3);
 				String group4 = m.group(4);
-//				log.debug("group1={}, group2={}, group3={}, group4={}", group1, group2, group3, group4);
-				
+				log.debug("group1={}, group2={}, group3={}, group4={}", group1, group2, group3, group4);
+
 				try {
 					GalaxyNumberUnit gnu = this.textToGalaxyNumberUnit(group1);
 					double total = Double.parseDouble(group3);
@@ -206,7 +192,7 @@ public class TradingService {
 				catch(Exception e) {
 					log.error("{}", e.getMessage());
 				}
-				
+
 			}
 		}
 
@@ -215,7 +201,7 @@ public class TradingService {
 		return qo;
 	}
 
-	public QueryOutput thirdTypeProcessor(String text) {
+	public QueryOutput galaxyNumberCalculationProcessor(String text) {
 		QueryOutput qo = new QueryOutput();
 
 		boolean valid = false;
@@ -228,7 +214,7 @@ public class TradingService {
 				String group1 = m.group(1);
 				String group2 = m.group(2).trim();
 				String group3 = m.group(3);
-//				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
+				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
 
 				String galaxy = group2;
 				try {
@@ -248,7 +234,7 @@ public class TradingService {
 		return qo;
 	}
 
-	public QueryOutput forthTypeProcessor(String text) {
+	public QueryOutput galaxyCreditsCalculationProcessor(String text) {
 		QueryOutput qo = new QueryOutput();
 
 		boolean valid = false;
@@ -261,8 +247,8 @@ public class TradingService {
 				String group1 = m.group(1);
 				String group2 = m.group(2).trim();
 				String group3 = m.group(3);
-//				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
-				
+				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
+
 				try {
 					GalaxyNumberUnit gnu = this.textToGalaxyNumberUnit(group2);
 					int number = gnu.getNumber();
@@ -300,13 +286,13 @@ public class TradingService {
 	public String processLine(String text) {
 		String output = "";
 		if(StringUtils.isNotBlank(text)) {
-			QueryOutput firstOutput = this.firstTypeProcessor(text);
+			QueryOutput firstOutput = this.galaxyToRomanProcessor(text);
 			if(!firstOutput.isValid()) {
-				QueryOutput secondOutput = this.secondTypeProcessor(text);
+				QueryOutput secondOutput = this.galaxyUnitToNumberProcessor(text);
 				if(!secondOutput.isValid()) {
-					QueryOutput thirdOutput = this.thirdTypeProcessor(text);
+					QueryOutput thirdOutput = this.galaxyNumberCalculationProcessor(text);
 					if(!thirdOutput.isValid()) {
-						QueryOutput forthOutput = this.forthTypeProcessor(text);
+						QueryOutput forthOutput = this.galaxyCreditsCalculationProcessor(text);
 						if(!forthOutput.isValid()) {
 							output = "I have no idea what you are talking about";
 						}
