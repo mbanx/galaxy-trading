@@ -26,6 +26,7 @@ public class TradingServiceTest {
 		assertTrue(qo.isValid());
 	}
 
+	@Ignore
 	@Test
 	public void test2() {
 		TradingService service = new TradingService();
@@ -51,6 +52,7 @@ public class TradingServiceTest {
 		assertEquals("I have no idea what you are talking about", qo13.getOutput());
 	}
 
+	@Ignore
 	@Test
 	public void test3() {
 		TradingService service = new TradingService();
@@ -91,8 +93,12 @@ public class TradingServiceTest {
 		builder.append("tegj is L").append(System.lineSeparator());
 		builder.append("glob glob Silver is 34 Credits").append(System.lineSeparator());
 		builder.append("glob prok Gold is 57800 Credits").append(System.lineSeparator());
-		builder.append("pish pish Iron is 3910 Credits").append(System.lineSeparator());
-		builder.append("how much is glob prok ?").append(System.lineSeparator());
+		builder.append("pish pish Iron is 39.10 Credits").append(System.lineSeparator());
+		
+		builder.append("how many Credits is glob Silver ?").append(System.lineSeparator());
+		builder.append("how many Credits is glob Gold ?").append(System.lineSeparator());
+		builder.append("how many Credits is glob Iron ?").append(System.lineSeparator());
+		
 		builder.append("how much is pish glob glob prok ?").append(System.lineSeparator());
 		builder.append("how many Credits is pish Silver ?").append(System.lineSeparator());
 		builder.append("how many Credits is glob glob Silver ?").append(System.lineSeparator());

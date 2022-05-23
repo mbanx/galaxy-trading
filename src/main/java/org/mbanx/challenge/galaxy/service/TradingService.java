@@ -1,5 +1,6 @@
 package org.mbanx.challenge.galaxy.service;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -254,9 +255,10 @@ public class TradingService {
 					int number = gnu.getNumber();
 					String galaxyUnit = gnu.getGalaxyUnit();
 					double unitValue = this.galaxyUnitToUnitValue(galaxyUnit);
-					long credit = Math.round(number * unitValue);
-
-					output = String.format("%s is %s", group2, credit);
+					double credit = number * unitValue;
+					
+					DecimalFormat format = new DecimalFormat("0.###############");
+					output = String.format("%s is %s", group2, format.format(credit));
 					valid = true;
 				}
 				catch(Exception e) {
@@ -308,4 +310,16 @@ public class TradingService {
 		}
 		return output;
 	}
+
+//	public static void main(String[] args)
+//	{
+//
+//		double price = 4.3000;
+//		DecimalFormat format = new DecimalFormat("0.###############");
+//		System.out.println(format.format(price));
+//
+//		double answer = 5.515151510000;
+//		DecimalFormat df = new DecimalFormat("###.#");
+//		System.out.println(df.format(answer));
+//	}
 }
