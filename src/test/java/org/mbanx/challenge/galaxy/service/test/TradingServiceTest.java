@@ -3,7 +3,6 @@ package org.mbanx.challenge.galaxy.service.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mbanx.challenge.galaxy.model.QueryOutput;
@@ -26,7 +25,6 @@ public class TradingServiceTest {
 		assertTrue(qo.isValid());
 	}
 
-	@Ignore
 	@Test
 	public void test2() {
 		TradingService service = new TradingService();
@@ -52,7 +50,6 @@ public class TradingServiceTest {
 		assertEquals("I have no idea what you are talking about", qo13.getOutput());
 	}
 
-	@Ignore
 	@Test
 	public void test3() {
 		TradingService service = new TradingService();
@@ -91,18 +88,20 @@ public class TradingServiceTest {
 		builder.append("prok is V").append(System.lineSeparator());
 		builder.append("pish is X").append(System.lineSeparator());
 		builder.append("tegj is L").append(System.lineSeparator());
-		builder.append("glob glob Silver is 34 Credits").append(System.lineSeparator());
-		builder.append("glob prok Gold is 57800 Credits").append(System.lineSeparator());
-		builder.append("pish pish Iron is 39.10 Credits").append(System.lineSeparator());
 		
-		builder.append("how many Credits is glob Silver ?").append(System.lineSeparator());
-		builder.append("how many Credits is glob Gold ?").append(System.lineSeparator());
-		builder.append("how many Credits is glob Iron ?").append(System.lineSeparator());
+		builder.append("glob     glob     Silver     is 34.5 Credits      ").append(System.lineSeparator());
+		builder.append("glob prok Gold is     57800.53 Credits   ").append(System.lineSeparator());
+		builder.append("    pish pish Iron is 3910.21 Credits").append(System.lineSeparator());
 		
-		builder.append("how much is pish glob glob prok ?").append(System.lineSeparator());
+		builder.append("how  much is pish     Tegj gLob glob ?    ").append(System.lineSeparator());
+
+		builder.append("   how many Credits is Glob Silver ?").append(System.lineSeparator());
+		builder.append("how many Credits is gloB    Gold ?").append(System.lineSeparator());
+		builder.append("how     manY Credits is glob Iron ?").append(System.lineSeparator());
 		builder.append("how many Credits is pish Silver ?").append(System.lineSeparator());
-		builder.append("how many Credits is glob glob Silver ?").append(System.lineSeparator());
-		builder.append("how many Credits is glob prok Gold ?").append(System.lineSeparator());
+		builder.append("   how many Credits   is    pish     Iron    ?"       ).append(System.lineSeparator());
+		builder.append("how many Credits is     glob prok       silver     ?   ").append(System.lineSeparator());
+		builder.append("how many     Credits     is glob        prok     Gold ?      ").append(System.lineSeparator());
 		builder.append("how many Credits is glob prok Iron ?").append(System.lineSeparator());
 		builder.append("how much wood could a woodchuck chuck if a woodchuck could chuck wood ?").append(System.lineSeparator());
 

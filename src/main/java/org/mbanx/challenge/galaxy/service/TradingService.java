@@ -73,12 +73,16 @@ public class TradingService {
 			String[] g1Splits = text.split(Pattern.quote(" "));
 			for (int i = 0; i < g1Splits.length; i++) {
 				String galaxyNumber = g1Splits[i];
-
-				if(galaxyToRomanMap.containsKey(galaxyNumber)) {
-					roman += galaxyToRomanMap.get(galaxyNumber);
-				}
-				else {
-					throw new Exception("galaxyNumber '"+galaxyNumber+"' unrecognize");
+				
+				// process only not blank character
+				if(StringUtils.isNotBlank(galaxyNumber)) {
+					String normGalaxyNumber = StringUtils.trim(galaxyNumber).toLowerCase();
+					if(galaxyToRomanMap.containsKey(normGalaxyNumber)) {
+						roman += galaxyToRomanMap.get(normGalaxyNumber);
+					}
+					else {
+						throw new Exception("galaxyNumber '"+galaxyNumber+"' unrecognize");
+					}
 				}
 			}
 		}
@@ -100,8 +104,9 @@ public class TradingService {
 		int splitsLength = splits.length;
 		// get last word
 
-		String galaxyUnit = splits[splitsLength - 1];
-		String galaxyNumber = StringUtils.replace(text, " "+galaxyUnit, "");
+		String galaxyUnit = StringUtils.trim(splits[splitsLength - 1]);
+		String galaxyNumber = StringUtils.trim(StringUtils.replace(text, " "+galaxyUnit, ""));
+		
 		String romanNumber = this.galaxyToRoman(galaxyNumber);
 		int number = this.romanToNumber(romanNumber);
 
@@ -114,11 +119,13 @@ public class TradingService {
 	}
 
 	public double galaxyUnitToUnitValue(String text) {
-		Double unitValue = 0.0;
-		if(unitToValueMap.containsKey(text)) {
-			unitValue = unitToValueMap.get(text);
+		String normText = text.toLowerCase();
+		if(unitToValueMap.containsKey(normText)) {
+			return unitToValueMap.get(normText);
 		}
-		return unitValue;
+		else {
+			throw new NullPointerException();
+		}
 	}
 
 	public double galaxyNumberUnitToCredit(String text) throws Exception {
@@ -135,13 +142,13 @@ public class TradingService {
 
 		boolean valid = false;
 		if(StringUtils.isNotBlank(text)) {
-			String regex = "^([a-zA-Z]+) (is) ([I,V,X,L,C,D,M]+$)";
+			String regex = "([a-zA-Z]+)\\s+(?i)(is)\\s+([I,V,X,L,C,D,M]+)";
 			Pattern p = Pattern.compile(regex);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
-				String group1 = m.group(1);
-				String group2 = m.group(2);
-				String group3 = m.group(3);
+				String group1 = StringUtils.trim(m.group(1));
+				String group2 = StringUtils.trim(m.group(2));
+				String group3 = StringUtils.trim(m.group(3));
 				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
 
 				String galaxy = group1;
@@ -151,8 +158,8 @@ public class TradingService {
 					this.isRomanValid(roman);
 					int number = this.romanToNumber(roman);
 
-					galaxyToRomanMap.put(galaxy, roman);
-					galaxyToNumberMap.put(galaxy, number);
+					galaxyToRomanMap.put(galaxy.toLowerCase(), roman);
+					galaxyToNumberMap.put(galaxy.toLowerCase(), number);
 					valid = true;
 				}
 				catch (Exception e) {
@@ -171,14 +178,14 @@ public class TradingService {
 
 		boolean valid = false;
 		if(StringUtils.isNotBlank(text)) {
-			String regex = "(\\D+) (?i)(is) ([0-9]+) (Credits)";
+			String regex = "(\\D+)(?i)(is)\\s+([0-9|.]+)\\s+(?i)(Credits)";
 			Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
-				String group1 = m.group(1);
-				String group2 = m.group(2);
-				String group3 = m.group(3);
-				String group4 = m.group(4);
+				String group1 = StringUtils.trim(m.group(1));
+				String group2 = StringUtils.trim(m.group(2));
+				String group3 = StringUtils.trim(m.group(3));
+				String group4 = StringUtils.trim(m.group(4));
 				log.debug("group1={}, group2={}, group3={}, group4={}", group1, group2, group3, group4);
 
 				try {
@@ -187,7 +194,7 @@ public class TradingService {
 					double number = (double) gnu.getNumber();
 					double unitValue = total / number;
 
-					unitToValueMap.put(gnu.getGalaxyUnit(), unitValue);
+					unitToValueMap.put(gnu.getGalaxyUnit().toLowerCase(), unitValue);
 					valid = true;
 				}
 				catch(Exception e) {
@@ -208,13 +215,13 @@ public class TradingService {
 		boolean valid = false;
 		String output = "I have no idea what you are talking about";
 		if(StringUtils.isNotBlank(text)) {
-			String regex = "(?i)(how much is) ([\\w\\s]+)(\\?)";
+			String regex = "(?i)(how\\s+much\\s+is\\s+)([\\w\\s]+)(\\?)";
 			Pattern p = Pattern.compile(regex);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
-				String group1 = m.group(1);
-				String group2 = m.group(2).trim();
-				String group3 = m.group(3);
+				String group1 = StringUtils.trim(m.group(1));
+				String group2 = StringUtils.trim(m.group(2));
+				String group3 = StringUtils.trim(m.group(3));
 				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
 
 				String galaxy = group2;
@@ -241,13 +248,13 @@ public class TradingService {
 		boolean valid = false;
 		String output = "I have no idea what you are talking about";
 		if(StringUtils.isNotBlank(text)) {
-			String regex = "(?i)(how many Credits is) ([\\w\\s]+)(\\?)";
+			String regex = "(?i)(how\\s+many\\s+Credits\\s+is\\s+)([\\w\\s]+)(\\?)";
 			Pattern p = Pattern.compile(regex);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
-				String group1 = m.group(1);
-				String group2 = m.group(2).trim();
-				String group3 = m.group(3);
+				String group1 = StringUtils.trim(m.group(1));
+				String group2 = StringUtils.trim(m.group(2));
+				String group3 = StringUtils.trim(m.group(3));
 				log.debug("group1={}, group2={}, group3={}", group1, group2, group3);
 
 				try {
@@ -310,16 +317,4 @@ public class TradingService {
 		}
 		return output;
 	}
-
-//	public static void main(String[] args)
-//	{
-//
-//		double price = 4.3000;
-//		DecimalFormat format = new DecimalFormat("0.###############");
-//		System.out.println(format.format(price));
-//
-//		double answer = 5.515151510000;
-//		DecimalFormat df = new DecimalFormat("###.#");
-//		System.out.println(df.format(answer));
-//	}
 }
