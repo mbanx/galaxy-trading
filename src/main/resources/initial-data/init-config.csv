@@ -3,4 +3,4 @@
 (?i)(how\s+much\s+is\s+)([\w\s]+)(\?)#GalaxyNumberCalculationProcessor
 (?i)(how\s+many\s+Credits\s+is\s+)([\w\s]+)(\?)#GalaxyCreditCalculationProcessor
 (?i)does\s+([\w\s]+)(has|have)\s+(more|less)\s+credits\s+than\s+([\w\s]+)\?#GalaxyCreditComparisonProcessor
-(?i)is\s+([\w\s]+)\s+larger\s+than\s+([\w\s]+)\?#GalaxyNumberComparisonProcessor
+(?i)is\s+([\w\s]+)\s+(larger|smaller)\s+than\s+([\w\s]+)\?#GalaxyNumberComparisonProcessor

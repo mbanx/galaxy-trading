@@ -31,7 +31,6 @@ public class GalaxyUnitToNumberProcessor extends TextProcessor{
 
 		boolean valid = false;
 		if(StringUtils.isNotBlank(text)) {
-//			String pattern = "(\\D+)(?i)(is)\\s+([0-9|.]+)\\s+(?i)(Credits)";
 			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(text);
 			while (m.find()) {

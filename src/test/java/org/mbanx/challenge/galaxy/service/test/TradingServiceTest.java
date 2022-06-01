@@ -128,9 +128,11 @@ public class TradingServiceTest {
 
 		builder.append("Does pish tegj glob glob Iron has more Credits than glob glob Gold ?").append(System.lineSeparator());
 		builder.append("Is glob prok larger than pish pish?").append(System.lineSeparator());
+		builder.append("Is glob prok smaller than pish pish?").append(System.lineSeparator());
+		builder.append("Is pish pish smaller than glob prok?").append(System.lineSeparator());
 		builder.append("how much wood could a woodchuck chuck if a woodchuck could chuck wood ?").append(System.lineSeparator());
 
 		String output = service.processTrading(builder.toString());
-		System.out.println(output);
+		log.info(output);
 	}
 }

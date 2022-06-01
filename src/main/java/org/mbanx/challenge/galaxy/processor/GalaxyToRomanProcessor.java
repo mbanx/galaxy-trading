@@ -30,7 +30,6 @@ public class GalaxyToRomanProcessor extends TextProcessor{
 	
 		boolean valid = false;
 		if(StringUtils.isNotBlank(text)) {
-//			String pattern = "([a-zA-Z]+)\\s+(?i)(is)\\s+([I,V,X,L,C,D,M]+)";
 			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(text);
 			while (m.find()) {

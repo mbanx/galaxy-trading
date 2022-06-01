@@ -32,12 +32,11 @@ public class GalaxyNumberComparisonProcessor extends TextProcessor{
 		boolean valid = false;
 		String output = "I have no idea what you are talking about";
 		if(StringUtils.isNotBlank(text)) {
-//			String pattern = "(?i)is\\s+([\\w\\s]+)\\s+larger\\s+than\\s+([\\w\\s]+)\\?";
 			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
 				String group1 = StringUtils.trim(m.group(1));
-				String group2 = StringUtils.trim(m.group(2));
+				String group2 = StringUtils.trim(m.group(3));
 				log.debug("group1={}, group2={}", group1, group2);
 
 				try {

@@ -32,7 +32,6 @@ public class GalaxyNumberCalculationProcessor extends TextProcessor{
 		boolean valid = false;
 		String output = "I have no idea what you are talking about";
 		if(StringUtils.isNotBlank(text)) {
-//			String pattern = "(?i)(how\\s+much\\s+is\\s+)([\\w\\s]+)(\\?)";
 			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
