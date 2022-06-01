@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.mbanx.challenge.galaxy.exception.InvalidNumberFormatException;
 import org.mbanx.challenge.galaxy.model.QueryOutput;
 import org.mbanx.challenge.galaxy.util.Converter;
-import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,13 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 public class GalaxyNumberComparisonProcessor extends TextProcessor{
 	
 	public GalaxyNumberComparisonProcessor(
+			String pattern,
 			Converter converter,
 			Map<Character, Integer> romanToNumbeMap,
 			Map<String, String> galaxyToRomanMap, 
 			Map<String, Integer> galaxyToNumberMap,
 			Map<String, Double> galaxyUnitToNumberMap) {
 		
-		super(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		super(pattern, converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
 	}
 
 	@Override
@@ -32,8 +32,8 @@ public class GalaxyNumberComparisonProcessor extends TextProcessor{
 		boolean valid = false;
 		String output = "I have no idea what you are talking about";
 		if(StringUtils.isNotBlank(text)) {
-			String regex = "(?i)is\\s+([\\w\\s]+)\\s+larger\\s+than\\s+([\\w\\s]+)\\?";
-			Pattern p = Pattern.compile(regex);
+//			String pattern = "(?i)is\\s+([\\w\\s]+)\\s+larger\\s+than\\s+([\\w\\s]+)\\?";
+			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
 				String group1 = StringUtils.trim(m.group(1));

@@ -9,6 +9,7 @@ public abstract class TextProcessor {
 	
 	protected TextProcessor nextProcessor;
 	
+	protected String pattern;
 	protected Converter converter;
 	protected Map<Character,Integer> romanToNumbeMap;
 	protected Map<String, String> galaxyToRomanMap;
@@ -16,6 +17,7 @@ public abstract class TextProcessor {
 	protected Map<String, Double> galaxyUnitToNumberMap; 
 	
 	public TextProcessor(
+			String pattern,
 			Converter converter,
 			Map<Character, Integer> romanToNumbeMap, 
 			Map<String, String> galaxyToRomanMap,
@@ -23,6 +25,7 @@ public abstract class TextProcessor {
 			Map<String, Double> galaxyUnitToNumberMap) {
 		super();
 		
+		this.pattern = pattern;
 		this.converter = converter;
 		this.romanToNumbeMap = romanToNumbeMap;
 		this.galaxyToRomanMap = galaxyToRomanMap;

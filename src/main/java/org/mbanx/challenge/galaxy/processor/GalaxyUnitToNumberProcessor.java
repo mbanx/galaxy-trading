@@ -15,13 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 public class GalaxyUnitToNumberProcessor extends TextProcessor{
 	
 	public GalaxyUnitToNumberProcessor(
+			String pattern,
 			Converter converter,
 			Map<Character, Integer> romanToNumbeMap, 
 			Map<String, String> galaxyToRomanMap,
 			Map<String, Integer> galaxyToNumberMap, 
 			Map<String, Double> galaxyUnitToNumberMap) {
 		
-		super(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		super(pattern, converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
 	}
 
 	@Override
@@ -30,8 +31,8 @@ public class GalaxyUnitToNumberProcessor extends TextProcessor{
 
 		boolean valid = false;
 		if(StringUtils.isNotBlank(text)) {
-			String regex = "(\\D+)(?i)(is)\\s+([0-9|.]+)\\s+(?i)(Credits)";
-			Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+//			String pattern = "(\\D+)(?i)(is)\\s+([0-9|.]+)\\s+(?i)(Credits)";
+			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
 				String group1 = StringUtils.trim(m.group(1));

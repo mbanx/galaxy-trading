@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.mbanx.challenge.galaxy.model.ProcessorPatternConfiguration;
 import org.mbanx.challenge.galaxy.model.QueryOutput;
 import org.mbanx.challenge.galaxy.processor.GalaxyCreditCalculationProcessor;
 import org.mbanx.challenge.galaxy.processor.GalaxyCreditComparisonProcessor;
@@ -14,7 +15,13 @@ import org.mbanx.challenge.galaxy.processor.GalaxyNumberComparisonProcessor;
 import org.mbanx.challenge.galaxy.processor.GalaxyToRomanProcessor;
 import org.mbanx.challenge.galaxy.processor.GalaxyUnitToNumberProcessor;
 import org.mbanx.challenge.galaxy.processor.TextProcessor;
+import org.mbanx.challenge.galaxy.processor.factory.TextProcessorFactory;
+import org.mbanx.challenge.galaxy.repo.ProcessorPatternConfigurationRepo;
 import org.mbanx.challenge.galaxy.util.Converter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,22 +30,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
+@Service
 public class TradingService {
 
-	private Map<Character,Integer> romanToNumbeMap;
-	private Map<String, String> galaxyToRomanMap;
-	private Map<String, Integer> galaxyToNumberMap;
-	private Map<String, Double> galaxyUnitToNumberMap;
+	@Autowired
+	private ProcessorPatternConfigurationRepo configRepo;
+	
+	public String processTrading(String text) {
 
-	public TradingService() {
-		this.init();
-	}
-
-	public void init() {
-		romanToNumbeMap = new HashMap<>();
-		galaxyToRomanMap = new HashMap<>();
-		galaxyToNumberMap = new HashMap<>();
-		galaxyUnitToNumberMap = new HashMap<>();
+		//create new map for each processing
+		Map<Character,Integer> romanToNumbeMap = new HashMap<>();
+		Map<String, String> galaxyToRomanMap = new HashMap<>();
+		Map<String, Integer> galaxyToNumberMap = new HashMap<>();
+		Map<String, Double> galaxyUnitToNumberMap = new HashMap<>();
 
 		//initial value
 		romanToNumbeMap.put('I',1);
@@ -48,34 +52,38 @@ public class TradingService {
 		romanToNumbeMap.put('C',100);   
 		romanToNumbeMap.put('D',500);   
 		romanToNumbeMap.put('M',1000); 
-		
-	}
 
-	public String processTrading(String text) {
-		this.init();
-		
 		Converter converter = new Converter(romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		
-		TextProcessor p1 = new GalaxyToRomanProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		TextProcessor p2 = new GalaxyUnitToNumberProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		TextProcessor p3 = new GalaxyNumberCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		TextProcessor p4 = new GalaxyCreditCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		TextProcessor p5 = new GalaxyCreditComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		TextProcessor p6 = new GalaxyNumberComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		
+		TextProcessorFactory factory = new TextProcessorFactory(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
 		List<TextProcessor> processors = new ArrayList<>();
-		processors.add(p1);
-		processors.add(p2);
-		processors.add(p3);
-		processors.add(p4);
-		processors.add(p5);
-		processors.add(p6);
 		
+		List<ProcessorPatternConfiguration> configs = configRepo.findByParameterEquals(null, null, true, Pageable.unpaged()).getContent();
+		for(ProcessorPatternConfiguration config: configs) {
+			TextProcessor p = factory.getTextProcessor(config.getProcessorName(), config.getPattern());
+			if(p != null) {
+				processors.add(p);
+			}
+		}
+		
+//		TextProcessor p1 = new GalaxyToRomanProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+//		TextProcessor p2 = new GalaxyUnitToNumberProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+//		TextProcessor p3 = new GalaxyNumberCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+//		TextProcessor p4 = new GalaxyCreditCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+//		TextProcessor p5 = new GalaxyCreditComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+//		TextProcessor p6 = new GalaxyNumberComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+//
+//		processors.add(p1);
+//		processors.add(p2);
+//		processors.add(p3);
+//		processors.add(p4);
+//		processors.add(p5);
+//		processors.add(p6);
+
 		StringBuilder builder = new StringBuilder();
 		String[] multiLineText = text.split("\\r?\\n");
 		for(String line: multiLineText) {
 			String output = this.processLine(line, processors);
-			
+
 			if(StringUtils.isNotBlank(output)) {
 				builder.append(output).append(System.lineSeparator());
 			}

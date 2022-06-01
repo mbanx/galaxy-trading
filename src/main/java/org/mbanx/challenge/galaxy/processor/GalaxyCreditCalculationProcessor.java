@@ -10,7 +10,6 @@ import org.mbanx.challenge.galaxy.exception.InvalidNumberFormatException;
 import org.mbanx.challenge.galaxy.model.GalaxyNumberUnit;
 import org.mbanx.challenge.galaxy.model.QueryOutput;
 import org.mbanx.challenge.galaxy.util.Converter;
-import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,13 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 public class GalaxyCreditCalculationProcessor extends TextProcessor{
 
 	public GalaxyCreditCalculationProcessor(
+			String pattern,
 			Converter converter,
 			Map<Character, Integer> romanToNumbeMap,
 			Map<String, String> galaxyToRomanMap, 
 			Map<String, Integer> galaxyToNumberMap,
 			Map<String, Double> galaxyUnitToNumberMap) {
 
-		super(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		super(pattern, converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
 	}
 
 	@Override
@@ -34,8 +34,8 @@ public class GalaxyCreditCalculationProcessor extends TextProcessor{
 		boolean valid = false;
 		String output = "I have no idea what you are talking about";
 		if(StringUtils.isNotBlank(text)) {
-			String regex = "(?i)(how\\s+many\\s+Credits\\s+is\\s+)([\\w\\s]+)(\\?)";
-			Pattern p = Pattern.compile(regex);
+//			String regex = "(?i)(how\\s+many\\s+Credits\\s+is\\s+)([\\w\\s]+)(\\?)";
+			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
 				String group1 = StringUtils.trim(m.group(1));

@@ -5,10 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.mbanx.challenge.galaxy.exception.InvalidNumberFormatException;
 import org.mbanx.challenge.galaxy.model.QueryOutput;
 import org.mbanx.challenge.galaxy.util.Converter;
-import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,13 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 public class GalaxyToRomanProcessor extends TextProcessor{
 	
 	public GalaxyToRomanProcessor(
+			String pattern,
 			Converter converter,
 			Map<Character, Integer> romanToNumbeMap, 
 			Map<String, String> galaxyToRomanMap,
 			Map<String, Integer> galaxyToNumberMap, 
 			Map<String, Double> galaxyUnitToNumberMap) {
 		
-		super(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		super(pattern, converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
 	}
 	
 	@Override
@@ -31,8 +30,8 @@ public class GalaxyToRomanProcessor extends TextProcessor{
 	
 		boolean valid = false;
 		if(StringUtils.isNotBlank(text)) {
-			String regex = "([a-zA-Z]+)\\s+(?i)(is)\\s+([I,V,X,L,C,D,M]+)";
-			Pattern p = Pattern.compile(regex);
+//			String pattern = "([a-zA-Z]+)\\s+(?i)(is)\\s+([I,V,X,L,C,D,M]+)";
+			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(text);
 			while (m.find()) {
 				String group1 = StringUtils.trim(m.group(1));
