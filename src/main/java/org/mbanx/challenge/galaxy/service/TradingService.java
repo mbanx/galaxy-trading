@@ -56,12 +56,12 @@ public class TradingService {
 		
 		Converter converter = new Converter(romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
 		
-		GalaxyToRomanProcessor p1 = new GalaxyToRomanProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		GalaxyUnitToNumberProcessor p2 = new GalaxyUnitToNumberProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		GalaxyNumberCalculationProcessor p3 = new GalaxyNumberCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		GalaxyCreditCalculationProcessor p4 = new GalaxyCreditCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		GalaxyCreditComparisonProcessor p5 = new GalaxyCreditComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
-		GalaxyNumberComparisonProcessor p6 = new GalaxyNumberComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		TextProcessor p1 = new GalaxyToRomanProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		TextProcessor p2 = new GalaxyUnitToNumberProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		TextProcessor p3 = new GalaxyNumberCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		TextProcessor p4 = new GalaxyCreditCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		TextProcessor p5 = new GalaxyCreditComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		TextProcessor p6 = new GalaxyNumberComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
 		
 		List<TextProcessor> processors = new ArrayList<>();
 		processors.add(p1);
