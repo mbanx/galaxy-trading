@@ -13,7 +13,7 @@ public interface ProcessorPatternConfigurationRepo extends JpaRepository<Process
 	@Query("SELECT DISTINCT c FROM ProcessorPatternConfiguration c "
 			+ "WHERE (COALESCE(:ids) is null or c.id IN (:ids)) "
 			+ "AND (COALESCE(:processorNames) is null or c.processorName IN (:processorNames)) "
-			+ "AND (enable is null or c.enable = :enable) ")
+			+ "AND (:enable is null or c.enable = :enable)")
 	public Page<ProcessorPatternConfiguration> findByParameterEquals(
 			Set<Long> ids,
 			Set<String> processorNames,
