@@ -51,11 +51,17 @@ Note: By doing that, there is a Processor that can process text using multiple p
 3. Add ProcessorConfig in database for the new ProcessorClass
 
 ### Database
-I use H2 embeded database for easy deployment (since this application only a demo)
+Database is needed to store ProcessorConfig. Each config contains pattern and processorName.  
+![image](https://user-images.githubusercontent.com/58011539/171351254-d44f0939-1d50-4075-909b-3705cdee261d.png)
+
 When we start the application, it will load default ProcesserConfig from file to H2, so the application is ready to process the current requirement. 
 ![image](https://user-images.githubusercontent.com/58011539/171348668-2e683fd8-e5fc-4631-9ef9-884c7458679f.png)
-Don't forget to change the H2 file location according to yout environenment
+
+I use H2 embeded database for easy deployment (since this application only a demo)
+Don't forget to change the H2 file location according to yout environenment.  
 ![image](https://user-images.githubusercontent.com/58011539/171349009-2b0d2b60-68d7-4e09-8ef5-4a4324051052.png)
+
+
 
 
 # Run The Application
