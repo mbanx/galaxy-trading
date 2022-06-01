@@ -15,6 +15,8 @@ import org.mbanx.challenge.galaxy.processor.GalaxyNumberCalculationProcessor;
 import org.mbanx.challenge.galaxy.processor.GalaxyNumberComparisonProcessor;
 import org.mbanx.challenge.galaxy.processor.GalaxyToRomanProcessor;
 import org.mbanx.challenge.galaxy.processor.GalaxyUnitToNumberProcessor;
+import org.mbanx.challenge.galaxy.processor.TextProcessor;
+import org.mbanx.challenge.galaxy.util.Converter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,23 +25,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Getter
 @Setter
-public class TradingService {
+public class TradingService2 {
 
 	private Map<Character,Integer> romanToNumbeMap;
 	private Map<String, String> galaxyToRomanMap;
 	private Map<String, Integer> galaxyToNumberMap;
 	private Map<String, Double> galaxyUnitToNumberMap;
 
-	public TradingService() {
+	public TradingService2() {
+		this.init();
+	}
+
+	public void init() {
 		romanToNumbeMap = new HashMap<>();
 		galaxyToRomanMap = new HashMap<>();
 		galaxyToNumberMap = new HashMap<>();
 		galaxyUnitToNumberMap = new HashMap<>();
 
-		this.initRomanToNumber();
-	}
-
-	public void initRomanToNumber() {
 		//initial value
 		romanToNumbeMap.put('I',1);
 		romanToNumbeMap.put('V',5);
@@ -48,6 +50,7 @@ public class TradingService {
 		romanToNumbeMap.put('C',100);   
 		romanToNumbeMap.put('D',500);   
 		romanToNumbeMap.put('M',1000); 
+		
 	}
 
 	public boolean isRomanValid(String roman) throws Exception {
@@ -56,7 +59,7 @@ public class TradingService {
 		Matcher m = p.matcher(roman);
 		boolean valid = m.matches();
 		if(!valid) {
-			throw new Exception("Invalid roman number '"+roman+"'");
+			throw new Exception("Requested number is in invalid format");
 		}
 		return valid;
 	}
@@ -288,10 +291,21 @@ public class TradingService {
 	}
 
 	public String processTrading(String text) {
+		this.init();
+		
+		Converter converter = new Converter(romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		
+		GalaxyToRomanProcessor p1 = new GalaxyToRomanProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		GalaxyUnitToNumberProcessor p2 = new GalaxyUnitToNumberProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		GalaxyNumberCalculationProcessor p3 = new GalaxyNumberCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		GalaxyCreditCalculationProcessor p4 = new GalaxyCreditCalculationProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		GalaxyCreditComparisonProcessor p5 = new GalaxyCreditComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		GalaxyNumberComparisonProcessor p6 = new GalaxyNumberComparisonProcessor(converter, romanToNumbeMap, galaxyToRomanMap, galaxyToNumberMap, galaxyUnitToNumberMap);
+		
 		StringBuilder builder = new StringBuilder();
 		String[] multiLineText = text.split("\\r?\\n");
 		for(String line: multiLineText) {
-			String output = this.processLine(line);
+			String output = this.processLine(line, p1, p2, p3, p4, p5, p6);
 			if(StringUtils.isNotBlank(output)) {
 				builder.append(output).append(System.lineSeparator());
 			}
@@ -299,22 +313,41 @@ public class TradingService {
 		return builder.toString();
 	}
 
-	public String processLine(String text) {
+	public String processLine(String text, 
+			TextProcessor p1, 
+			TextProcessor p2, 
+			TextProcessor p3, 
+			TextProcessor p4, 
+			TextProcessor p5, 
+			TextProcessor p6) {
 		String output = "";
 		if(StringUtils.isNotBlank(text)) {
-			QueryOutput firstOutput = this.galaxyToRomanProcessor(text);
+			QueryOutput firstOutput = p1.process(text);
 			if(!firstOutput.isValid()) {
-				QueryOutput secondOutput = this.galaxyUnitToNumberProcessor(text);
+				QueryOutput secondOutput = p2.process(text);
 				if(!secondOutput.isValid()) {
-					QueryOutput thirdOutput = this.galaxyNumberCalculationProcessor(text);
+					QueryOutput thirdOutput = p3.process(text);
 					if(!thirdOutput.isValid()) {
-						QueryOutput forthOutput = this.galaxyCreditsCalculationProcessor(text);
+						QueryOutput forthOutput = p4.process(text);
 						if(!forthOutput.isValid()) {
-							output = "I have no idea what you are talking about";
+							QueryOutput fifthOutput = p5.process(text);
+							if(!fifthOutput.isValid()) {
+								QueryOutput sixthOutput = p6.process(text);
+								if(!sixthOutput.isValid()) {
+									output = "I have no idea what you are talking about";
+								}
+								else {
+									output = sixthOutput.getOutput();
+								}
+							}
+							else {
+								output = fifthOutput.getOutput();
+							}
 						}
 						else {
 							output = forthOutput.getOutput();
 						}
+						
 					}
 					else {
 						output = thirdOutput.getOutput();
@@ -324,11 +357,4 @@ public class TradingService {
 		}
 		return output;
 	}
-	
-//	public String processLineNatural(String text) {
-//		boolean valid = true
-//		while (valid) {
-//			type type = (type) en.nextElement();
-//		}
-//	}
 }
